@@ -62,24 +62,18 @@ class PotentialFunctionClassifier:
         self.charges = self.charges[non_zero_mask, ...]
         self.indexes = self.indexes[non_zero_mask, ...]
 
-    def fit(self, train_x: np.array, train_y: np.array, error_threshold = 0.1) -> None:
+    def fit(self, train_x: np.array, train_y: np.array, epochs: int=1) -> None:
         assert train_x.shape[0] == train_y.shape[0]
 
         self._remeber(train_x, train_y)
         error = np.inf
         self.charges[0] = 1.
 
-        for i in cycle(range(self.train_x.shape[0])):
-            if error < error_threshold:
-                break
+        for _ in range(epochs):
+            for i in range(self.train_x.shape[0]):
+                if self.predict(self.train_x[i]) != self.train_y[i]:
+                    self.charges[i] += 1
 
-            pred_i = self.predict(self.train_x[i])
-
-            if pred_i != self.train_y[i]:
-                self.charges[i] += 1
-            
-            pred = self.predict(self.train_x)
-            error = 1.0 - accuracy_score(self.train_y, pred)
 
         self._reduce()
 
