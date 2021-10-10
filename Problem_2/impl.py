@@ -9,21 +9,9 @@ def grid(size):
     return product(range(size), range(size))
 
 
-def plot_data(X: np.array, Y: np.array, figsize=(14, 8), **kwargs):
-    """
-        Named non poistional arguments:
-            indexes - array of indexes which are shown by red x marker;
-            f_names - list of feauteres names;
-    """
-    
-    num_features = X.shape[1] - 1
-    f_names = None
-    if "f_names" in kwargs:
-        f_names = kwargs["f_names"]
-    else:
-        f_names = [f'Feature {i}' for i in range(num_features)]
-
-    plt.figure(figsize=figsize)
+def plot_features_data(X: np.array, Y: np.array, f_names):
+    num_features = X.shape[1]
+    print(X.shape)
 
     for i, (f1, f2) in enumerate(grid(num_features)):
         plt.subplot(num_features, num_features, 1 + i)
@@ -32,14 +20,22 @@ def plot_data(X: np.array, Y: np.array, figsize=(14, 8), **kwargs):
             plt.text(0.25, 0.5, f_names[f1])
         else:
             plt.scatter(X[:, f1], X[:, f2], c=Y)
-
-            if "indexes" in kwargs: 
-                x_slice = X[kwargs["indexes"], ...]
-                plt.scatter(x_slice[:, f1], x_slice[:, f2], c='r', marker='x')
-
             plt.xlabel(f_names[f1])
             plt.ylabel(f_names[f2])
 
+    plt.tight_layout()
+
+
+def plot_points(x: np.array, y: np.array, Classes: np.array, marked_indexes=None, axes_names:tuple[str, str] =None):
+    plt.scatter(x, y, c=Classes)
+    if axes_names is None:
+        axes_names = ("x", "y")
+
+    if not marked_indexes is None:
+        plt.scatter(x[marked_indexes], y[marked_indexes], c='r', marker='x')
+
+    plt.xlabel(axes_names[0])
+    plt.ylabel(axes_names[1])    
 
 class PotentialFunctionClassifier:
     def __init__(self, window_size: float) -> None:
@@ -107,7 +103,6 @@ class PotentialFunctionClassifier:
 
 def _main():
     a = np.array([0, 1, 9, 2, 2, 2,2])
-    
     print(a[np.array([0, 1, 2])])
 
 
