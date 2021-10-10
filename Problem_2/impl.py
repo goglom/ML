@@ -5,7 +5,7 @@ from itertools import cycle, product
 from sklearn.metrics import accuracy_score
 
 
-def _grid(size):
+def grid(size):
     return product(range(size), range(size))
 
 
@@ -14,7 +14,7 @@ def plot_data(X: np.array, Y: np.array, f_names: list[str], figsize=(14, 8)):
 
     plt.figure(figsize=figsize)
 
-    for i, (f1, f2) in enumerate(_grid(num_features)):
+    for i, (f1, f2) in enumerate(grid(num_features)):
         plt.subplot(num_features, num_features, 1 + i)
 
         if f1 == f2:
@@ -29,6 +29,7 @@ class PotentialFunctionClassifier:
     def __init__(self, window_size: float) -> None:
         self.train_x = None
         self.charges = None
+        self.indexes = None
         self.widnow_size = window_size
         self.train_y = None
         self.classes = None
@@ -38,14 +39,16 @@ class PotentialFunctionClassifier:
         self.train_x = train_x
         self.classes = np.unique(train_y)
         self.charges = np.zeros_like(train_y, dtype=int)
+        self.indexes = np.arange(0, len(train_y), dtype=int)
         self.train_y = train_y
 
     def _reduce(self) -> None:
         non_zero_mask = self.charges != 0.0
 
-        self.train_x = self.train_x[non_zero_mask,...]
-        self.train_y = self.train_y[non_zero_mask,...]
-        self.charges = self.charges[non_zero_mask,...]
+        self.train_x = self.train_x[non_zero_mask, ...]
+        self.train_y = self.train_y[non_zero_mask, ...]
+        self.charges = self.charges[non_zero_mask, ...]
+        self.indexes = self.indexes[non_zero_mask, ...]
 
     def fit(self, train_x: np.array, train_y: np.array, error_threshold = 0.1) -> None:
         assert train_x.shape[0] == train_y.shape[0]
@@ -87,24 +90,9 @@ class PotentialFunctionClassifier:
 
 
 def _main():
-    iris_ds = datasets.load_iris()
-    X = iris_ds.data
-    Y = iris_ds.target
-    plot_data(X, Y, iris_ds.feature_names)
-
-
-    classifier = PotentialFunctionClassifier(0.1)
-
-    classifier.fit(X, Y)
-
-    print(classifier.charges)
-
-    print(accuracy_score(Y, classifier.predict(X)))
+    a = np.array([0, 1, 9, 2, 2, 2,2])
     
-    plt.tight_layout()
-    plt.show()
-    
-        
+    print(a[np.array([0, 1, 2])])
 
 
 
