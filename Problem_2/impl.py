@@ -9,8 +9,19 @@ def grid(size):
     return product(range(size), range(size))
 
 
-def plot_data(X: np.array, Y: np.array, f_names: list[str], figsize=(14, 8)):
+def plot_data(X: np.array, Y: np.array, figsize=(14, 8), **kwargs):
+    """
+        Named non poistional arguments:
+            indexes - array of indexes which are shown by red x marker;
+            f_names - list of feauteres names;
+    """
+    
     num_features = X.shape[1] - 1
+    f_names = None
+    if "f_names" in kwargs:
+        f_names = kwargs["f_names"]
+    else:
+        f_names = [f'Feature {i}' for i in range(num_features)]
 
     plt.figure(figsize=figsize)
 
@@ -21,6 +32,11 @@ def plot_data(X: np.array, Y: np.array, f_names: list[str], figsize=(14, 8)):
             plt.text(0.25, 0.5, f_names[f1])
         else:
             plt.scatter(X[:, f1], X[:, f2], c=Y)
+
+            if "indexes" in kwargs: 
+                x_slice = X[kwargs["indexes"], ...]
+                plt.scatter(x_slice[:, f1], x_slice[:, f2], c='r', marker='x')
+
             plt.xlabel(f_names[f1])
             plt.ylabel(f_names[f2])
 
