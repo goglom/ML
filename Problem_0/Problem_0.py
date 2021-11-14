@@ -57,9 +57,8 @@ def auc(x_vals, y_vals):
 
 
 def coin_flip(y_labels: np.array):
-    rand_gen = np.random.RandomState(1)
-    y_pred = rand_gen.random_sample(y_labels.shape[0])
-    y_gt = rand_gen.random_sample(y_labels.shape[0]) - 0.5 >= 0
+    y_pred = np.random.random_sample(y_labels.shape[0])
+    y_gt = np.random.random_sample(y_labels.shape[0]) - 0.5 >= 0
 
     return y_gt, y_pred
 

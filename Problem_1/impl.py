@@ -20,13 +20,20 @@ class PotentialFunctionClassifier:
         self.indexes = np.arange(0, len(train_y), dtype=int)
         self.train_y = train_y
 
-    def _reduce(self) -> None:
+    def reduce(self) -> None:
         non_zero_mask = self.charges != 0.0
 
         self.train_x = self.train_x[non_zero_mask, ...]
         self.train_y = self.train_y[non_zero_mask, ...]
         self.charges = self.charges[non_zero_mask, ...]
         self.indexes = self.indexes[non_zero_mask, ...]
+
+    def clear(self):
+        self.train_x = None
+        self.charges = None
+        self.indexes = None
+        self.train_y = None
+        self.classes = None
 
     def fit(self, train_x: np.array, train_y: np.array, epochs: int=1) -> None:
         assert train_x.shape[0] == train_y.shape[0]
@@ -39,8 +46,6 @@ class PotentialFunctionClassifier:
                 if self.predict(self.train_x[i]) != self.train_y[i]:
                     self.charges[i] += 1
 
-        # Delete all samples with zero charge
-        self._reduce()
 
     def predict(self, x: np.array):
         test_x = np.copy(x)
@@ -65,7 +70,6 @@ def grid(size):
 
 def plot_features_data(X: np.array, Y: np.array, f_names):
     num_features = X.shape[1]
-    print(X.shape)
 
     for i, (f1, f2) in enumerate(grid(num_features)):
         plt.subplot(num_features, num_features, 1 + i)
@@ -73,7 +77,7 @@ def plot_features_data(X: np.array, Y: np.array, f_names):
         if f1 == f2:
             plt.text(0.25, 0.5, f_names[f1])
         else:
-            plt.scatter(X[:, f1], X[:, f2], c=Y)
+            plt.scatter(X[:, f1], X[:, f2], c=Y, edgecolor='k')
             plt.xlabel(f_names[f1])
             plt.ylabel(f_names[f2])
 
@@ -81,7 +85,7 @@ def plot_features_data(X: np.array, Y: np.array, f_names):
 
 
 def plot_points(x: np.array, y: np.array, Classes: np.array, marked_indexes=None, axes_names:tuple[str, str] =None):
-    plt.scatter(x, y, c=Classes)
+    plt.scatter(x, y, c=Classes, edgecolor='k')
     if axes_names is None:
         axes_names = ("x", "y")
 
