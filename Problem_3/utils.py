@@ -8,12 +8,15 @@ def get_wrong_pred(y_pred: np.ndarray, y_gt: np.ndarray, x: np.ndarray):
     return x[mask], y_pred[mask]
 
 
-def show_data(x: np.ndarray, y=None, number: int=5, dpi=80, highlight_pixeles=None, **kwargs):
+def show_data(x: np.ndarray, y=None, number: int=5, shape=None, dpi=80, highlight_pixeles=None, **kwargs):
+    if shape is None:
+        shape = (1, number)
+    
     size = int(np.sqrt(x.shape[1]))
     images = x.reshape((x.shape[0], size, size))
-    plt.figure(figsize=(3 * number, 3), dpi=dpi)
+    plt.figure(figsize=(3 * shape[1], 3 * shape[0]), dpi=dpi)
     for i, img in enumerate(images[:number]):
-        plt.subplot(1, number, 1 + i)
+        plt.subplot(shape[0], shape[1], 1 + i)
         if not y is None:
             plt.title(f"Prediction: {y[i]}")
         plt.imshow(img, cmap=cm.gray_r)
