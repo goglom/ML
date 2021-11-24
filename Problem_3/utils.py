@@ -1,6 +1,7 @@
 from matplotlib import cm
 import matplotlib.pyplot as plt
 import numpy as np
+import dill
 
 
 def get_wrong_pred(y_pred: np.ndarray, y_gt: np.ndarray, x: np.ndarray):
@@ -27,3 +28,12 @@ def show_data(x: np.ndarray, y=None, number: int=5, shape=None, dpi=80, highligh
         plt.yticks([])
         plt.xticks([])
     plt.tight_layout()
+
+def serialize(object, filename):
+    with open("./tmp/" + filename + ".pickle", "wb") as file:
+        dill.dump(object, file, protocol=dill.HIGHEST_PROTOCOL, fix_imports=True)
+
+
+def deserialize(filename):
+    with open("./tmp/" + filename + ".pickle", "rb") as file:
+        return dill.load(file)
